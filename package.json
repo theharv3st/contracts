@@ -39,7 +39,7 @@
 		"ethereumjs-util": "^7.0.7",
 		"ethers": "^5.0.9",
 		"hardhat": "2.7.1",
-		"hardhat-deploy": "^0.7.0-beta.44",
+		"hardhat-deploy": "0.10.4",
 		"hardhat-gas-reporter": "^1.0.4",
 		"hardhat-typechain": "^0.3.4",
 		"mocha": "^8.1.3",
