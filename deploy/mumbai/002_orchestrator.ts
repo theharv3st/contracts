@@ -1,11 +1,12 @@
 import hre, { deployments, hardhatArguments } from "hardhat";
 
 module.exports = async ({ getNamedAccounts, deployments }: any) => {
-	if (hardhatArguments.network !== "mumbai")
-			return;
-	const { deployIfDifferent, log } = deployments;
+	if (hardhatArguments.network !== "mumbai") return;
+	const { log } = deployments;
 	const { deployer } = await getNamedAccounts();
-	const deploymentPolygonMessengerDeployResult = await deployments.get("deploymentPolygonMessenger");
+	const polygonMessengerDeployResult = await deployments.get("PolygonL2Messenger");
+	const guardian = deployer;
+	const timelock = deployer;
 
 	const orchestratorDeployResult = await deployments.deploy("PolygonOrchestrator", {
 		from: deployer,
@@ -14,11 +15,10 @@ module.exports = async ({ getNamedAccounts, deployments }: any) => {
 		// 	Note: Owner is set to deployer so that initial vaults can be
 		// launched without the need for voting
 		// The owner should be changed to timelock post setup
-		args: [deployer, deployer, deploymentPolygonMessengerDeployResult.address]
+		args: [guardian, timelock, polygonMessengerDeployResult.address],
 	});
 
 	log(
 		`PolygonOrchestrator deployed at ${orchestratorDeployResult.address} for ${orchestratorDeployResult.receipt?.gasUsed}`
 	);
-
-}
+};
