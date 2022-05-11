@@ -10,7 +10,25 @@ module.exports = async ({ getNamedAccounts, deployments }: any) => {
         );
 
         //Deploy Mock DAIs
-        let DAI, WETH;
+        let DAI, WETH, WBTC;
+        try {
+        	WBTC = await deployments.get("WBTC");
+        } catch (error) {
+        	log(error.message);
+        	const WBTCDeployResult = await deployIfDifferent(
+                ["data"],
+                "WBTC",
+                { from: deployer },
+                "WBTC"
+            );
+            WBTC = await deployments.get("WBTC");
+            if (WBTCDeployResult.newlyDeployed) {
+							log(
+									`WBTC deployed at ${WBTC.address} for ${WBTCDeployResult.receipt.gasUsed}`
+							);
+						}
+        }
+
         try {
             DAI = await deployments.get("DAI");
         } catch (error) {

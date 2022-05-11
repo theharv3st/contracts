@@ -5,12 +5,34 @@ module.exports = async ({ getNamedAccounts, deployments }: any) => {
         const { deployIfDifferent, log } = deployments;
         const { deployer } = await getNamedAccounts();
 
-        let TCAPOracle, WETHOracle, DAIOracle;
+        let TCAPOracle, WETHOracle, DAIOracle, WBTCOracle;
 
         const timelock = await deployments.getOrNull("Timelock");
         const tcapAggregator = await deployments.getOrNull(
             "AggregatorInterfaceTCAP"
         );
+
+        try {
+        	WBTCOracle = await deployments.get("WBTCOracle");
+        } catch (error) {
+        	log(error.message);
+        	let oracleAddress = "0x6135b13325bfC4B00278B4abC5e20bbce2D6580e";
+					const deployResult = await deployIfDifferent(
+							["data"],
+							"WBTCOracle",
+							{ from: deployer },
+							"ChainlinkOracle",
+							oracleAddress,
+							timelock.address
+					);
+					WBTCOracle = await deployments.get("WBTCOracle");
+					if (deployResult.newlyDeployed) {
+							log(
+									`Price Feed Oracle deployed at ${WBTCOracle.address} for ${deployResult.receipt.gasUsed}`
+							);
+					}
+
+        }
 
         try {
             TCAPOracle = await deployments.get("TCAPOracle");

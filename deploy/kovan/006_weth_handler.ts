@@ -21,7 +21,7 @@ const WETHVaultHandler = async (hre: HardhatRuntimeEnvironment) => {
             try {
                 let tcap = await deployments.get("TCAP");
 
-                let WETHContract = await deployments.get("WETH");
+                let WETHContractAddress = "0xd0A1E359811322d97991E03f863a0C30C2cF029C";
 
                 let divisor = process.env.DIVISOR as string;
                 let ratio = process.env.RATIO as string;
@@ -56,11 +56,11 @@ const WETHVaultHandler = async (hre: HardhatRuntimeEnvironment) => {
                             liquidationPenalty,
                             tcapOracle.address,
                             tcap.address,
-                            WETHContract.address,
+                            WETHContractAddress,
                             priceFeedETH.address,
                             priceFeedETH.address,
-                            rewardAddress,
                             timelock.address,
+                            "20000000000000000000",
                         ],
                     }
                 );

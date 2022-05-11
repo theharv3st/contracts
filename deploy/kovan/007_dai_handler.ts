@@ -58,8 +58,8 @@ const DAIVaultHandler = async (hre: HardhatRuntimeEnvironment) => {
                             DAIContract.address,
                             priceFeedDAI.address,
                             priceFeedETH.address,
-                            rewardAddress,
                             timelock.address,
+                            "20000000000000000000",
                         ],
                     }
                 );

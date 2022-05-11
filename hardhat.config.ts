@@ -16,6 +16,8 @@ import "hardhat-tracer";
 const mnemonic = process.env.DEPLOYER_MNEMONIC as string;
 const ganacheMnemonic = process.env.GANACHE_MNEMONIC as string;
 
+const ROPSTEN_PRIVATE_KEY = `${process.env.ROPSTEN_PRIVATE_KEY}`;
+
 const config: HardhatUserConfig = {
 	//@ts-ignore
 	namedAccounts: {
@@ -64,7 +66,7 @@ const config: HardhatUserConfig = {
 		},
 		kovan: {
 			url: process.env.KOVAN_API_URL,
-			accounts: { mnemonic: mnemonic },
+			accounts: [`${ROPSTEN_PRIVATE_KEY}`],
 		},
 		optimismKovan: {
 			url: process.env.OPTIMISM_KOVAN_API_URL,

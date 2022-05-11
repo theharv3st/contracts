@@ -13,7 +13,7 @@ const governance: DeployFunction = async function (
             const ethers = hre.ethers;
 
             const namedAccounts = await hre.getNamedAccounts();
-            const oneYear = 1640140333; // Wednesday, December 22, 2021 2:32:13 AM
+            const oneYear = 1670140333; // Wednesday, December 4, 2022 2:32:13 AM
             const threeDays = 259200;
             const [owner] = await ethers.getSigners();
 
