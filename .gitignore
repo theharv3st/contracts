@@ -16,3 +16,4 @@ typechain/
 .idea/workspace.xml
 /out
 mnemonic.txt
+.DS_Store
