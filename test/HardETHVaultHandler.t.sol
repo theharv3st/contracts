@@ -1,8 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.7.5;
 
-import "ds-test/test.sol";
-import "./Vm.sol";
+import "forge-std/Test.sol";
 import "../contracts/ETHVaultHandler.sol";
 import "../contracts/Orchestrator.sol";
 import "../contracts/oracles/ChainlinkOracle.sol";
@@ -22,7 +21,6 @@ contract ETHVaultHandlerTest is DSTest {
 	event NewBurnFee(address indexed _owner, uint256 _burnFee);
 
 	// Setup
-	Vm vm;
 	ETHVaultHandler ethVault;
 	Orchestrator orchestrator = new Orchestrator(address(this));
 	TCAP tcap = new TCAP("Total Crypto Market Cap Token", "TCAP", 0, (orchestrator));
@@ -163,7 +161,6 @@ contract ETHVaultHandlerTest is DSTest {
 		orchestrator.executeTransaction(address(ethVault), 0, "setMinimumTCAP(uint256)", abi.encode(_minimumTCAP));
 		assertEq(ethVault.minimumTCAP(), _minimumTCAP);
 	}
-
 
 	function testMint_ShouldCreateTCAP() public {
 		vm.startPrank(user);
@@ -329,7 +326,6 @@ contract ETHVaultHandlerTest is DSTest {
 		ethVault.createVault();
 		ethVault.addCollateralETH{value : requiredCollateral + t}();
 		ethVault.mint(_tcapAmount);
-		(, uint256 collateralOld, uint256 debtOld,) = ethVault.vaults(1);
 
 		vm.stopPrank();
 		vm.startPrank(user2);
@@ -432,5 +428,8 @@ contract ETHVaultHandlerTest is DSTest {
 		uint256 currentFee = ethVault.getFee(_amount);
 
 		// We assert that the old fee calculation is the same as the new one.
+        console.log(calculatedFee);
+        console.log(currentFee);
+        assert(calculatedFee == currentFee);
 	}
 }
