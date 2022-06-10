@@ -10,7 +10,7 @@ import "../contracts/mocks/AggregatorInterface.sol";
 import "../contracts/mocks/WETH.sol";
 
 
-contract ETHVaultHandlerTest is DSTest {
+contract ETHVaultHandlerTest is Test {
 
 	// events
 	event NewMinimumTCAP(
@@ -40,7 +40,6 @@ contract ETHVaultHandlerTest is DSTest {
 	address treasury = address(0x3);
 
 	function setUp() public {
-		vm = Vm(HEVM_ADDRESS);
 		ethVault = new ETHVaultHandler(
 			orchestrator,
 			divisor,
@@ -417,7 +416,8 @@ contract ETHVaultHandlerTest is DSTest {
 	function testGetFee_ShouldCalculateCorrectValue_withNewDecimalFormat(uint8 _burnFeePercentage, uint96 _amount) public {
 		// We always think about fee as a percentage first.
 		// We multiply by 100 later so that the code works
-		if ((_burnFeePercentage * 100) > 1000) {
+        // Seems if burn percentage is lower than 256 the fee will always be 0
+		if ((_burnFeePercentage * 100) > 1000 || _burnFeePercentage < 256) {
 			return;
 		}
 		orchestrator.setBurnFee(ethVault, _burnFeePercentage * 100);
@@ -428,8 +428,12 @@ contract ETHVaultHandlerTest is DSTest {
 		uint256 currentFee = ethVault.getFee(_amount);
 
 		// We assert that the old fee calculation is the same as the new one.
-        console.log(calculatedFee);
-        console.log(currentFee);
         assert(calculatedFee == currentFee);
 	}
+
+    function testMigrateVault_ShouldMigrateCollateral_WhenUserWantsToUpdate() public {
+        //setUp
+        //execution
+        //assert
+    }
 }
