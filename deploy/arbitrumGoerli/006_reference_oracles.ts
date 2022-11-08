@@ -11,54 +11,65 @@ module.exports = async ({ getNamedAccounts, deployments }: any) => {
         const tcapAggregator = await deployments.getOrNull(
             "AggregatorInterfaceTCAP"
         );
+        const wETHAggregator = await deployments.getOrNull(
+            "AggregatorInterfaceWETH"
+        );
+        const daiAggregator = await deployments.getOrNull(
+            "AggregatorInterfaceDAI"
+        );
 
-        try {
-            TCAPOracle = await deployments.get("TCAPOracle");
-        } catch (error: any) {
-            log(error.message);
-            let oracleAddress = tcapAggregator.address;
+        let deployResult = await deployments.deploy(
+						"TCAPOracle",
+						{
+								from: deployer,
+								contract: "ChainlinkOracle",
+								skipIfAlreadyDeployed: true,
+								log: true,
+								args: [tcapAggregator.address, l2MessageExecutor.address]
+						}
+				);
 
-            const deployResult = await deployments.deploy(
-                "TCAPOracle",
-                {
-                    from: deployer,
-                    contract: "ChainlinkOracle",
-                    skipIfAlreadyDeployed: true,
-                    log: true,
-                    args: [oracleAddress, l2MessageExecutor.address]
-                }
-            );
+				TCAPOracle = await deployments.get("TCAPOracle");
+				if (deployResult.newlyDeployed) {
+						log(
+								`Oracle deployed at ${TCAPOracle.address} for ${deployResult.receipt.gasUsed}`
+						);
+				}
 
-            TCAPOracle = await deployments.get("TCAPOracle");
-            if (deployResult.newlyDeployed) {
-                log(
-                    `Oracle deployed at ${TCAPOracle.address} for ${deployResult.receipt.gasUsed}`
-                );
-            }
-            try {
-                WETHOracle = await deployments.get("WETHOracle");
-            } catch (error: any) {
-                log(error.message);
-                // Couldn't find oracle address for arbitrum
-                let oracleAddress = tcapAggregator.address;
-                const deployResult = await deployments.deploy(
-										"WETHOracle",
-										{
-												from: deployer,
-												contract: "ChainlinkOracle",
-												skipIfAlreadyDeployed: true,
-												log: true,
-												args: [oracleAddress, l2MessageExecutor.address]
-										}
-								);
-                WETHOracle = await deployments.get("WETHOracle");
-                if (deployResult.newlyDeployed) {
-                    log(
-                        `Price Feed Oracle deployed at ${WETHOracle.address} for ${deployResult.receipt.gasUsed}`
-                    );
-                }
-            }
-        }
+				deployResult = await deployments.deploy(
+						"WETHOracle",
+						{
+								from: deployer,
+								contract: "ChainlinkOracle",
+								skipIfAlreadyDeployed: true,
+								log: true,
+								args: [wETHAggregator.address, l2MessageExecutor.address]
+						}
+				);
+				WETHOracle = await deployments.get("WETHOracle");
+				if (deployResult.newlyDeployed) {
+						log(
+								`Price Feed Oracle deployed at ${WETHOracle.address} for ${deployResult.receipt.gasUsed}`
+						);
+				}
+
+				deployResult = await deployments.deploy(
+						"DAIOracle",
+						{
+								from: deployer,
+								contract: "ChainlinkOracle",
+								skipIfAlreadyDeployed: true,
+								log: true,
+								args: [daiAggregator.address, l2MessageExecutor.address]
+						}
+				);
+				DAIOracle = await deployments.get("DAIOracle");
+				if (deployResult.newlyDeployed) {
+						log(
+								`Price Feed Oracle deployed at ${DAIOracle.address} for ${deployResult.receipt.gasUsed}`
+						);
+				}
+
     }
 };
 module.exports.tags = ["Oracle", "ChainlinkOracle"];

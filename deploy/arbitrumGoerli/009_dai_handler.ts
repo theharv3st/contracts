@@ -2,7 +2,7 @@ import { hardhatArguments } from "hardhat";
 import { DeployFunction } from "hardhat-deploy/types";
 import { deployments } from "hardhat";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
-const WETHVaultHandler = async (hre: HardhatRuntimeEnvironment) => {
+const DAIVaultHandler = async (hre: HardhatRuntimeEnvironment) => {
     if (hardhatArguments.network === "arbitrumGoerli") {
         const { log } = deployments;
         const namedAccounts = await hre.getNamedAccounts();
@@ -15,7 +15,7 @@ const WETHVaultHandler = async (hre: HardhatRuntimeEnvironment) => {
         let orchestrator = await deployments.get("ArbitrumOrchestrator");
 				let tcap = await deployments.get("TCAP");
 
-				let WETHContract = await deployments.get("WETH");
+				let DAIContract = await deployments.get("DAI");
 
 				let divisor = process.env.DIVISOR as string;
 				let ratio = process.env.RATIO as string;
@@ -26,13 +26,14 @@ const WETHVaultHandler = async (hre: HardhatRuntimeEnvironment) => {
 				let tcapOracle = await deployments.get("TCAPOracle");
 				let l2MessageExecutor = await deployments.get("L2MessageExecutor");
 				let priceFeedETH = await deployments.get("WETHOracle");
+				let priceFeedDAI = await deployments.get("DAIOracle");
 				let nonce = await owner.getTransactionCount();
 
 				const deployResult = await deployments.deploy(
-						"WETHVaultHandler",
+						"DAIVaultHandler",
 						{
 								from: deployer,
-								contract: "ETHVaultHandler",
+								contract: "ERC20VaultHandler",
 								skipIfAlreadyDeployed: true,
 								log: true,
 								args: [
@@ -43,21 +44,22 @@ const WETHVaultHandler = async (hre: HardhatRuntimeEnvironment) => {
 										liquidationPenalty,
 										tcapOracle.address,
 										tcap.address,
-										WETHContract.address,
-										priceFeedETH.address,
+										DAIContract.address,
+										priceFeedDAI.address,
 										priceFeedETH.address,
 										l2MessageExecutor.address,
 										"20000000000000000000"
 								],
 						}
 				);
-				handlerContract = await deployments.get("WETHVaultHandler");
+				handlerContract = await deployments.get("DAIVaultHandler");
 				if (deployResult.newlyDeployed) {
 						log(
-								`WETHVaultHandler deployed at ${handlerContract.address} for ${deployResult.receipt?.gasUsed}`
+								`DAIVaultHandler deployed at ${handlerContract.address}
+								for ${deployResult.receipt?.gasUsed}`
 						);
 				}
 
     }
 };
-export default WETHVaultHandler;
+export default DAIVaultHandler;

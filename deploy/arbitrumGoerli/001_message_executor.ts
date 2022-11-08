@@ -31,15 +31,6 @@ module.exports = async ({ ethers, getNamedAccounts, deployments }: any) => {
 		`ArbitrumLL2MessageExecutor deployed at ${l2MessageExecutorDeployment.address}
 		for ${l2MessageExecutorDeployment.receipt?.gasUsed}`
 	);
-
-// 	TODO: remove this. Added for testing
-	await deployments.deploy("Greeter", {
-		from: namedAccounts.deployer,
-		skipIfAlreadyDeployed: true,
-		log: true,
-		args: ["Initial Message"],
-	});
-
 };
 
 module.exports.tags = ["ArbitrumL2MessageExecutor"];
